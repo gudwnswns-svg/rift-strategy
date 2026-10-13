@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>균열의 격전지 전략 계산기</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+padding:15px;
+background:#111827;
+color:white;
+font-family:Arial,sans-serif;
+}
+
+h1,h2,h3{
+margin:0;
+}
+
+.card{
+background:#1f2937;
+border-radius:12px;
+padding:15px;
+margin-bottom:15px;
+max-width:1400px;
+margin-left:auto;
+margin-right:auto;
+}
+
+.summary{
+text-align:center;
+}
+
+.big{
+font-size:32px;
+font-weight:bold;
+color:#22c55e;
+}
+
+.blue{
+color:#60a5fa;
+}
+
+.red{
+color:#ef4444 !important;
+font-weight:bold;
+}
+
+button{
+background:#2563eb;
+color:white;
+border:none;
+padding:8px 12px;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+details{
+background:#1f2937;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+max-width:1400px;
+margin-left:auto;
+margin-right:auto;
+}
+
+summary{
+cursor:pointer;
+font-size:18px;
+font-weight:bold;
+}
+
+.table-wrap{
+overflow:auto;
+border:1px solid #374151;
+}
+
+table{
+border-collapse:collapse;
+width:max-content;
+min-width:100%;
+}
+
+.member-table{
+width:100%;
+table-layout:auto;
+}
+``
+
+th{
+background:#111827;
+position:sticky;
+top:0;
+z-index:30;
+}
+
+th,td{
+border:1px solid #374151;
+text-align:center;
+padding:4px;
+}
+
+input{
+background:#374151;
+color:white;
+border:none;
+border-radius:6px;
+padding:4px;
+text-align:center;
+}
+
+.nameInput{
+width:180px;
+}
+
+.numInput{
+width:80px;
+}
+
+.timeCell{
+display:flex;
+flex-direction:column;
+gap:2px;
+align-items:center;
+}
+
+.timeCell input{
+width:38px;
+height:22px;
+font-size:11px;
+padding:2px;
+}
+
+.timeCell input::placeholder{
+color:#9ca3af;
+font-size:11px;
+}
+
+.sticky-left{
+background:#1f2937;
+}
+
+.sticky-header-left{
+background:#111827;
+}
+
+.green{
+color:#22c55e;
+font-weight:bold;
+}
+
+.tools{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.save-msg{
+font-size:12px;
+color:#9ca3af;
+margin-top:5px;
+}
+
+@media(max-width:768px){
+
+body{
+padding:8px;
+}
+
+.table-wrap{
+max-height:none;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 style="text-align:center;margin-bottom:15px;">
+균열의 격전지 전략 계산기
+</h1>
+
+<div class="card summary">
+
+<h2>길드 총 남은점수 / 총점수</h2>
+
+<div class="big" id="guildScore">
+0 / 0
+</div>
+
+<br>
+
+<h2>길드 총 남은시간 / 총시간</h2>
+
+<div class="big blue" id="guildTime">
+00:00 / 00:00
+</div>
+
+<div class="save-msg"
+id="saveMessage">
+자동 저장 대기중
+</div>
+
+</div>
+
+<div class="tools">
+
+<button onclick="sortByRemainTime()">
+남은시간순 정렬
+</button>
+
+<button onclick="resetStrategy()">
+전략표 초기화
+</button>
+
+<button onclick="saveData()">
+저장
+</button>
+
+</div>
+
+<details>
+
+<summary>
+참가자 기본정보 설정
+</summary>
+
+<br>
+
+<div class="table-wrap">
+
+<table class="member-table">
+
+<thead>
+
+<tr>
+
+<th>
+구분
+</th>
+
+<th>프로필 격추</th>
+
+<th>지역 격추</th>
+
+<th>총시간</th>
+
+</tr>
+
+</thead>
+
+<tbody id="memberInfoBody">
+
+</tbody>
+
+</table>
+
+</div>
+
+</details>
+
+<div class="card">
+
+<h2 style="max-width:1400px;margin:0 auto 10px auto;">
+전략표
+</h2>
+
+<br>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>구분</th>
+
+<th style="width:75px;">B1</th>
+<th style="width:75px;">B2</th>
+<th style="width:75px;">B3</th>
+<th style="width:75px;">B4</th>
+<th style="width:75px;">B5</th>
+
+<th style="width:75px;">B6</th>
+<th style="width:75px;">B7</th>
+<th style="width:75px;">B8</th>
+<th style="width:75px;">B9</th>
+<th style="width:75px;">B10</th>
+
+<th style="width:90px;">사용시간</th>
+
+
+<th style="width:110px;">
+남은시간<br>/총시간
+</th>
+
+<th style="width:180px;">
+남은점수<br>/총점수
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="strategyBody">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+const SERVER_BONUS = 6;
+
+let memberCount = 17;
+
+function secToText(sec){
+
+let m=Math.floor(sec/60);
+let s=sec%60;
+
+return String(m).padStart(2,'0')
++ ':'
++ String(s).padStart(2,'0');
+
+}
+
+function autoSave(){
+
+clearTimeout(window.saveTimer);
+
+window.saveTimer = setTimeout(()=>{
+
+saveData();
+
+},300);
+
+}
+
+function saveData(){
+
+const inputs=
+document.querySelectorAll('input');
+
+const data=[];
+
+inputs.forEach(x=>{
+data.push(x.value);
+});
+
+localStorage.setItem(
+'riftStrategyData',
+JSON.stringify(data)
+);
+
+localStorage.setItem(
+'riftMemberCount',
+memberCount
+);
+
+const now = new Date();
+
+document.getElementById(
+'saveMessage'
+).innerText =
+'마지막 저장 : ' +
+now.toLocaleTimeString();
+
+}
+
+function loadData(){
+
+const count=
+Number(localStorage.getItem(
+'riftMemberCount'
+));
+
+if(count){
+memberCount=count;
+}
+
+render();
+
+const saved=
+localStorage.getItem(
+'riftStrategyData'
+);
+
+if(!saved){
+calculate();
+return;
+}
+
+const values=
+JSON.parse(saved);
+
+const inputs=
+document.querySelectorAll('input');
+
+inputs.forEach((input,index)=>{
+
+if(values[index]!==undefined){
+input.value=values[index];
+}
+
+});
+
+calculate();
+
+}
+
+function createTimeBox(
+member,
+boss
+){
+
+return `
+<div class="timeCell">
+
+<div style="display:flex;align-items:center;gap:4px;">
+<input
+class="bossMin"
+data-member="${member}"
+data-boss="${boss}"
+type="number"
+min="0"
+value="0">
+
+<span style="font-size:8px;">분</span>
+</div>
+
+<div style="display:flex;align-items:center;gap:4px;">
+<input
+class="bossSec"
+data-member="${member}"
+data-boss="${boss}"
+type="number"
+min="0"
+max="59"
+step="10"
+value="0">
+
+<span style="font-size:8px;">초</span>
+</div>
+
+</div>
+`;
+}
+
+function render(){
+
+const memberInfoBody =
+document.getElementById(
+'memberInfoBody'
+);
+
+const strategyBody =
+document.getElementById(
+'strategyBody'
+);
+
+memberInfoBody.innerHTML='';
+strategyBody.innerHTML='';
+
+for(let i=0;i<memberCount;i++){
+
+memberInfoBody.innerHTML += `
+
+<tr>
+
+<td>
+<input
+class="nameInput name"
+placeholder="닉네임">
+</td>
+
+<td>
+<input
+class="numInput profile"
+type="number"
+value="0">
+</td>
+
+<td>
+<input
+class="numInput region"
+type="number"
+value="0">
+</td>
+
+<td>
+
+<div class="timeCell">
+
+<div style="display:flex;align-items:center;gap:4px;">
+
+<input
+class="numInput totalMin"
+type="number"
+value="20">
+
+<span style="font-size:10px;">분</span>
+
+</div>
+
+<div style="display:flex;align-items:center;gap:4px;">
+
+<input
+class="numInput totalSec"
+type="number"
+value="0">
+
+<span style="font-size:10px;">초</span>
+
+</div>
+
+</div>
+
+</td>
+
+</tr>
+
+`;
+
+let row=`
+
+<tr>
+
+<td class="sticky-left nick">
+참가자${i+1}
+</td>
+
+`;
+
+for(let boss=1;boss<=10;boss++){
+
+row += `
+<td>
+${createTimeBox(i,boss)}
+</td>
+`;
+
+}
+
+row += `
+
+<td class="used">
+00:00
+</td>
+
+<td class="remain">
+00:00 / 00:00
+</td>
+
+<td class="score green">
+0 / 0
+</td>
+
+</tr>
+
+`;
+
+strategyBody.innerHTML += row;
+
+}
+
+}
+
+function calculate(){
+
+const names =
+document.querySelectorAll('.name');
+
+const profiles =
+document.querySelectorAll('.profile');
+
+const regions =
+document.querySelectorAll('.region');
+
+const totalMins =
+document.querySelectorAll('.totalMin');
+
+const totalSecs =
+document.querySelectorAll('.totalSec');
+
+const rows =
+document.querySelectorAll(
+'#strategyBody tr'
+);
+
+let guildRemain=0;
+let guildTotal=0;
+
+let guildRemainScore=0;
+let guildTotalScore=0;
+
+rows.forEach((row,index)=>{
+
+const name =
+names[index]?.value || `참가자${index+1}`;
+
+row.querySelector('.nick')
+.innerText = name;
+
+const profile =
+Number(
+profiles[index]?.value
+) || 0;
+
+const region =
+Number(
+regions[index]?.value
+) || 0;
+
+const totalTime =
+
+(Number(totalMins[index]?.value||0)*60)
+
++
+
+(Number(totalSecs[index]?.value||0));
+
+
+let used=0;
+
+for(let boss=1; boss<=10; boss++){
+
+const minInput =
+document.querySelector(
+`.bossMin[data-member="${index}"][data-boss="${boss}"]`
+);
+
+const secInput =
+document.querySelector(
+`.bossSec[data-member="${index}"][data-boss="${boss}"]`
+);
+
+const min =
+Number(minInput?.value)||0;
+
+const sec =
+Number(secInput?.value)||0;
+
+used += (min*60)+sec;
+
+}
+
+const remain =
+totalTime-used;
+
+const safeRemain =
+Math.max(0,remain);
+
+const bonus =
+100+
+profile+
+region+
+SERVER_BONUS;
+
+const remainScore =
+Math.round(
+bonus*
+1.09*
+10*
+safeRemain
+);
+
+const totalScore =
+Math.round(
+bonus*
+1.09*
+10*
+totalTime
+);
+
+row.querySelector('.used')
+.innerText =
+secToText(used);
+
+const remainCell =
+row.querySelector('.remain');
+
+remainCell.dataset.remain =
+safeRemain;
+
+remainCell.innerHTML =
+`${secToText(safeRemain)}<br>${secToText(totalTime)}`;
+
+
+if(remain<0){
+
+remainCell.classList.add('red');
+
+}else{
+
+remainCell.classList.remove('red');
+
+}
+
+row.querySelector('.score')
+.innerHTML =
+
+remainScore.toLocaleString()
+
++
+
+'<br>'
+
++
+
+totalScore.toLocaleString();
+
+guildRemain += safeRemain;
+guildTotal += totalTime;
+
+guildRemainScore += remainScore;
+guildTotalScore += totalScore;
+
+});
+
+document.getElementById(
+'guildTime'
+).innerText =
+
+secToText(guildRemain)
+
++
+
+' / '
+
++
+
+secToText(guildTotal);
+
+document.getElementById(
+'guildScore'
+).innerText =
+
+guildRemainScore.toLocaleString()
+
++
+
+' / '
+
++
+
+guildTotalScore.toLocaleString();
+
+}
+
+
+function resetStrategy(){
+
+if(!confirm(
+'전략표(B1~B10)만 초기화할까요?'
+)){
+return;
+}
+
+document
+.querySelectorAll('.bossMin')
+.forEach(input=>{
+
+input.value = 0;
+
+});
+
+document
+.querySelectorAll('.bossSec')
+.forEach(input=>{
+
+input.value = 0;
+
+});
+
+calculate();
+saveData();
+
+}
+
+function bindEvents(){
+
+document
+.querySelectorAll('input')
+.forEach(input=>{
+
+input.addEventListener(
+'input',
+()=>{
+
+calculate();
+autoSave();
+
+}
+);
+
+input.addEventListener(
+'focus',
+function(){
+
+setTimeout(()=>{
+
+this.select();
+
+},0);
+
+}
+);
+
+input.addEventListener(
+'touchstart',
+function(){
+
+setTimeout(()=>{
+
+this.select();
+
+},100);
+
+}
+);
+
+});
+
+}
+function sortByRemainTime(){
+
+const rows =
+Array.from(
+document.querySelectorAll(
+'#strategyBody tr'
+)
+);
+
+rows.sort((a,b)=>{
+
+const aRemain =
+Number(
+a.querySelector('.remain')
+.dataset.remain || 0
+);
+
+const bRemain =
+Number(
+b.querySelector('.remain')
+.dataset.remain || 0
+);
+
+return bRemain - aRemain;
+
+});
+
+const body =
+document.getElementById(
+'strategyBody'
+);
+
+rows.forEach(row=>{
+
+body.appendChild(row);
+
+});
+
+}
+loadData();
+bindEvents();
+
+</script>
+
+</body>
+
+</html>
